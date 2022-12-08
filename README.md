@@ -1,0 +1,139 @@
+#procmail-pre
+
+##Overview
+
+  procmail-pre is a filter for e-mail messages.  It is intended to be called by
+  procmail, to "pre-process" one message at a time, before applying matching rules and
+  actions.
+
+##What problem is this trying to solve?
+
+  procmail is a great tool for automatically filing and forwarding messages.
+  It is stable, reasonably fast and quite flexible.
+
+  Unfortunately, it is also very old, and e-mails today don't look like
+  e-mails did in the 1990s.  Specifically, procmail sometimes fails to
+  match "modern" e-mails because:
+
+  * They often contain multiple MIME attachments, and the message body itself
+    may be an attachment of type text/plain, text/html or both.
+
+  * Even subject lines and other headers may be in UTF-8 or some other encoding,
+    and encoded in a manner that makes them compatible with old mail protocols
+    but impossible to read unless decoded.
+
+  * The entire message (and possibly one or more attachments) may be encoded
+    as quoted-printable, resulting in keywords that a matching rule might
+    look for being broken up across lines of text (and failing to match).
+
+  * Message headers can be very long and are often broken down into
+    multiple parts across different lines of text.  This can also
+    cause matching problems.
+
+  If you like procmail, want to use it, but want it to handle "modern"
+  e-mails where plaintext matching against simple, one-line message headers
+  in US-ASCII encoding or against plaintext message text doesn't work, then
+  this pre-processor is for you!
+
+##How to use it?
+
+  * First, you have to write a configuration file for the pre-processor.
+    This is separate from the .procmailrc file -- it tells the pre-processor
+    what kinds of manipulation you want to perform on each message (one
+    message at a time, just like procmail).
+
+  * Next, you tell procmail to pre-process messages by adding this recipe
+    like the following near the top of your .procmailrc file:
+
+    :0fw
+    | /usr/local/bin/procmail-pre -config $HOME/procmail-pre.conf -message -
+
+##The procmail-pre configuration file
+
+  As described above, we need to also write a configuration file.  This is
+  a text file where every line is a directive.  The configuration file
+  can include blank lines and comments (lines that begin with the # mark).
+
+  The directives are:
+
+  # Causes procmail-pre to merge multi-line message headers into single,
+  # long header lines:
+  MERGE-HEADER-LINES
+
+  # Replaces headers encoded as =?UTF-8?B?...base64text...?=
+  # with the actual decoded byte stream.
+  DECODE-HEADER-LINES
+  
+  # Searches for literals or regular expressions (see below) in the message
+  # body, and for the first match on any given pattern, adds a header
+  # in the format shown below:
+  # KeywordMatch: <matchingtext>
+  # procmail will then be able to match on this (new, inserted) header instead of
+  # scanning the message body itself.
+  SEARCH-MESSAGE
+
+  # Searches base64 encoded MIME attachments, whose content type
+  # has the word "text" in it (i.e., text/html or text/plain), for
+  # keywords.
+  SEARCH-ATTACHMENTS
+
+  # Search the message body and/or attachments (see above) for a
+  # literal sequence of characters, specified after the space that
+  # follows the LITERAL keyword.
+  LITERAL Hello, World!
+
+  # Search the message body and/or attachments (see above) for a
+  # sequence of characters that matches a regular expression.
+  REGEX Hel.*old
+
+##Changes to the .procmailrc file
+
+  When you use procmail-pre, you will need to change your
+  .procmailrc file in two ways:
+
+  * Filter messages before applying matching rules, as described earlier.
+
+
+  * Instead of searching the message body in rule, which may not
+    work anyways because of mime-encoded content, look for a
+    KeywordMatch: header.
+
+    i.e., 
+
+    BEFORE (and not working for some messages):
+
+      .procmailrc:
+      ===========
+
+      :0H
+      * From: someone@somedomain.com
+      * some text in body
+      ! bounce@otherdomain.com
+
+    AFTER
+
+      .procmailrc:
+      ===========
+
+      :0fw
+      | procmail-pre -config $HOME/procmail-pre.conf -message -
+
+      :0
+      * From: someone@somedomain.com
+      * KeywordMatch: some text in body
+      ! bounce@otherdomain.com
+
+      procmail-pre.conf:
+      =================
+
+      MERGE-HEADER-LINES
+      DECODE-HEADER-LINES
+      SEARCH-MESSAGE
+      SEARCH-ATTACHMENTS
+      LITERAL some text in body
+
+##Learn more:
+
+  Procmail wiki: https://en.wikipedia.org/wiki/Procmail
+
+  Current releases of procmail: https://github.com/BuGlessRB/procmail

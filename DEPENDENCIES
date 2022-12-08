@@ -1,0 +1,29 @@
+procmail-pre depends on idanlib, which you can fetch from the following
+URL and compile:
+
+  https://github.com/00shoham/idanlib
+
+idanlib also has a few dependencies.  If you are on Ubuntu, you can
+satisfy them with this command:
+
+  apt install git gcc make libcurl4-gnutls-dev liblua5.3-dev uuid-dev
+
+Here is how you get and build idanlib:
+
+  cd ~
+  git clone https://github.com/00shoham/idanlib.git idanlib
+  cd idanlib/src
+  make
+
+Here is how you get, build and install procmail-pre:
+
+  cd ~
+  git clone https://github.com/00shoham/procmail-pre.git procmail-pre
+  cd procmail-pre/src
+  make install
+
+Note that 'make install' will run 'install' as root via sudo and sudo
+will prompt you for your password.  This pre-supposes that your login
+is able to perform 'sudo bash' or similar, for example by being in the
+sudo group in /etc/groups.
+
