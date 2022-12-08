@@ -1,12 +1,12 @@
-#procmail-pre
+procmail-pre
 
-##Overview
+Overview
 
   procmail-pre is a filter for e-mail messages.  It is intended to be called by
   procmail, to "pre-process" one message at a time, before applying matching rules and
   actions.
 
-##What problem is this trying to solve?
+What problem is this trying to solve?
 
   procmail is a great tool for automatically filing and forwarding messages.
   It is stable, reasonably fast and quite flexible.
@@ -35,7 +35,7 @@
   in US-ASCII encoding or against plaintext message text doesn't work, then
   this pre-processor is for you!
 
-##How to use it?
+How to use it?
 
   * First, you have to write a configuration file for the pre-processor.
     This is separate from the .procmailrc file -- it tells the pre-processor
@@ -48,7 +48,7 @@
     :0fw
     | /usr/local/bin/procmail-pre -config $HOME/procmail-pre.conf -message -
 
-##The procmail-pre configuration file
+The procmail-pre configuration file
 
   As described above, we need to also write a configuration file.  This is
   a text file where every line is a directive.  The configuration file
@@ -86,7 +86,7 @@
   # sequence of characters that matches a regular expression.
   REGEX Hel.*old
 
-##Changes to the .procmailrc file
+Changes to the .procmailrc file
 
   When you use procmail-pre, you will need to change your
   .procmailrc file in two ways:
@@ -132,7 +132,7 @@
       SEARCH-ATTACHMENTS
       LITERAL some text in body
 
-##Learn more:
+Learn more:
 
   Procmail wiki: https://en.wikipedia.org/wiki/Procmail
 
