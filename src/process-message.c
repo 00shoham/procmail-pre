@@ -281,6 +281,52 @@ enum scanning_states
   ss_content
   };
 
+int MessageHasContentTypeMultipart()
+  {
+  if( config==NULL )
+    Error( "MessageHasContentTypeMultipart() with no CONFIG object" );
+  
+  for( int i=0; i<config->nHeaderLines; ++i )
+    {
+    char* line = config->message[i];
+    if( strstr( line, "Content-Type: multipart")!=NULL )
+      return 1;
+    }
+
+  return 0;
+  }
+
+int MessageHasContentTypeText()
+  {
+  if( config==NULL )
+    Error( "MessageHasContentTypeMultipart() with no CONFIG object" );
+  
+  for( int i=0; i<config->nHeaderLines; ++i )
+    {
+    char* line = config->message[i];
+    if( strstr( line, "Content-Type:")!=NULL
+        && strstr( line, "text")!=NULL )
+      return 1;
+    }
+
+  return 0;
+  }
+
+int MessageHasContentEncodingBase64()
+  {
+  if( config==NULL )
+    Error( "MessageHasContentTypeMultipart() with no CONFIG object" );
+  
+  for( int i=0; i<config->nHeaderLines; ++i )
+    {
+    char* line = config->message[i];
+    if( strstr( line, "Content-Transfer-Encoding: base64")!=NULL )
+      return 1;
+    }
+
+  return 0;
+  }
+
 void ScanMessageForKeywords()
   {
   if( config==NULL )
@@ -303,6 +349,44 @@ void ScanMessageForKeywords()
 
   /* first, see if we have keywords in the raw message */
   ProcessContentInRawMessage();
+
+  if( MessageHasContentTypeMultipart()==0 )
+    {
+#ifdef DEBUG
+        printf( "MessageHasContentTypeMultipart - false\n" );
+#endif
+    /* might have to decode the body itself */
+    if( MessageHasContentTypeText() )
+      {
+#ifdef DEBUG
+      printf( "MessageHasContentTypeText()\n" );
+#endif
+      if( MessageHasContentEncodingBase64() )
+        {
+#ifdef DEBUG
+        printf( "MessageHasContentEncodingBase64()\n" );
+#endif
+        int nMessageBytes = 0;
+        for( int i=config->nHeaderLines; i<config->nLines; ++i )
+          nMessageBytes += strlen( config->message[i] );
+
+        char* asciiBuf = (char*)SafeCalloc( nMessageBytes+10, sizeof(char), "decode msg buf" );
+        char* ptr = asciiBuf;
+        for( int i=config->nHeaderLines; i<config->nLines; ++i )
+          {
+          char* line = config->message[i];
+          strcpy( ptr, line );
+          ptr += strlen( ptr );
+          }
+
+        ProcessContentInEncodedChunk( asciiBuf, ptr-asciiBuf );
+
+        free( asciiBuf );
+        }
+      }
+
+    return;
+    }
 
   if( config->searchEncodedTextAttachments==0 )
     return; /* we were not asked to do this */
