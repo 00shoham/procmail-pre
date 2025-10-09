@@ -158,6 +158,8 @@ void ReadKeywords( char* fileName )
           config->searchEncodedTextAttachments = 1;
         else if( strncasecmp( k, "SEARCH-MESSAGE", 14 )==0 )
           config->searchRawMessage = 1;
+        else if( strncasecmp( k, "EXPAND-TO-UTF", 13 )==0 )
+          config->expandToUtf = 1;
         else
           Warning( "Invalid keyord - [%s]", k );
         }

@@ -36,6 +36,7 @@ void InitConfig()
   config->decodeHeaderLines = 0;
   config->searchEncodedTextAttachments = 0;
   config->searchRawMessage = 0;
+  config->expandToUtf = 0;
 
   config->contentType = NULL;
   config->contentEncoding = NULL;

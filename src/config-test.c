@@ -191,7 +191,7 @@ int main( int argc, char** argv )
     if( maskOutput )
       MaskNonPrintableChars( decoded );
     else
-      printf( "Decoded: [%s]\n", decoded );
+      printf( "Decoded: [%s]\n", (char*)decoded );
     FREE( decoded );
     FREE( asciiData );
     }

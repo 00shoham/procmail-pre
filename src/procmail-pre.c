@@ -2,6 +2,8 @@
 
 int main( int argc, char** argv )
   {
+  glob_argv = argv;
+  glob_argc = argc;
   char* configFile = NULL;
   char* messageFile = NULL;
 

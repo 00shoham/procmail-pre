@@ -72,6 +72,14 @@ The procmail-pre configuration file
   # scanning the message body itself.
   SEARCH-MESSAGE
 
+  # Normally, any UTF-8 text is first converted from the text encoding to
+  # the raw ("binary") encoding.  Then, any characters that are not printable
+  # US-ASCII are converted to a sequence of hex codes %FE or whatever.  If you
+  # want the output to be just the raw UTF, accepting that it might be truncated
+  # early due to some zero bytes in there, then include this keyword.
+  # Not really recommended, but if you want it, here it is.
+  # EXPAND-TO-UTF
+
   # Searches base64 encoded MIME attachments, whose content type
   # has the word "text" in it (i.e., text/html or text/plain), for
   # keywords.

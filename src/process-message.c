@@ -68,7 +68,7 @@ void RemoveUTFFromHeaders()
         else
           break;
         }
-      if( gotAny )
+      if( gotAny && config->expandToUtf==0 )
         {
         char* newHeader = EncodeNonPrintableChars( (unsigned char*) header, headerOmitChars );
         free( header );

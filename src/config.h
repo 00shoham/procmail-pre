@@ -21,6 +21,7 @@ typedef struct _config
   int decodeHeaderLines;
   int searchEncodedTextAttachments;
   int searchRawMessage;
+  int expandToUtf;
 
   /* what did we see in the headers? */
   char* contentType;
