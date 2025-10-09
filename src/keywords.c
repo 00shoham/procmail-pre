@@ -85,6 +85,16 @@ void ReadKeywords( char* fileName )
       if( strncasecmp( k, "LITERAL ", 8 )==0
           || strncasecmp( k, "REGEX ", 6 )==0 )
         ++nLines;
+      else if( strncasecmp( k, "DECODE-HEADER-LINES", 19 )==0 )
+        config->decodeHeaderLines = 1;
+      else if( strncasecmp( k, "MERGE-HEADER-LINES", 18 )==0 )
+        config->mergeHeaderLines = 1;
+      else if( strncasecmp( k, "SEARCH-ATTACHMENTS", 18 )==0 )
+        config->searchEncodedTextAttachments = 1;
+      else if( strncasecmp( k, "SEARCH-MESSAGE", 14 )==0 )
+          config->searchRawMessage = 1;
+      else if( strncasecmp( k, "EXPAND-TO-UTF", 13 )==0 )
+        config->expandToUtf = 1;
       else
         {
         /* Warning( "Every keyword should be preceded by 'LITERAL' or 'REGEX'" ); */
@@ -150,16 +160,17 @@ void ReadKeywords( char* fileName )
 
           ++lineNo;
           }
+
         else if( strncasecmp( k, "DECODE-HEADER-LINES", 19 )==0 )
-          config->decodeHeaderLines = 1;
+          {} /* config->decodeHeaderLines = 1;*/
         else if( strncasecmp( k, "MERGE-HEADER-LINES", 18 )==0 )
-          config->mergeHeaderLines = 1;
+          {} /* config->mergeHeaderLines = 1;*/
         else if( strncasecmp( k, "SEARCH-ATTACHMENTS", 18 )==0 )
-          config->searchEncodedTextAttachments = 1;
+          {} /* config->searchEncodedTextAttachments = 1;*/
         else if( strncasecmp( k, "SEARCH-MESSAGE", 14 )==0 )
-          config->searchRawMessage = 1;
+          {} /* config->searchRawMessage = 1;*/
         else if( strncasecmp( k, "EXPAND-TO-UTF", 13 )==0 )
-          config->expandToUtf = 1;
+          {} /* config->expandToUtf = 1;*/
         else
           Warning( "Invalid keyord - [%s]", k );
         }
