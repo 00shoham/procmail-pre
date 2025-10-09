@@ -21,6 +21,16 @@ CC=gcc
 CFLAGS=-Wall -O2 $(INCLUDES)
 # CFLAGS=-Wall -g -rdynamic -fsanitize=address $(INCLUDES)
 
+GIT_COMMIT_HASH := $(shell git rev-parse HEAD)
+GIT_TAG := $(shell git describe --tags --always --dirty)
+
+version.h:
+	echo "#ifndef VERSION_H" > $@
+	echo "#define VERSION_H" >> $@
+	echo "const char* GIT_COMMIT = \"$(GIT_COMMIT_HASH)\";" >> $@
+	echo "const char* GIT_VERSION_TAG = \"$(GIT_TAG)\";" >> $@
+	echo "#endif" >> $@
+
 SHAREDOBJ=\
   config.o\
   keywords.o\
@@ -30,8 +40,9 @@ SHAREDOBJ=\
 
 ALLOBJ=\
   $(SHAREDOBJ)\
+  version.h
 
-%.o: %.c $(wildcard *.h)
+%.o: %.c $(wildcard *.h) version.h
 	$(CC) $(CFLAGS) -c $<
 
 $(BIN): % : %.o $(ALLOBJ) $(UTILSLIB)

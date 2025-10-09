@@ -1,4 +1,5 @@
 #include "base.h"
+#include "version.h"
 
 int main( int argc, char** argv )
   {
@@ -19,9 +20,21 @@ int main( int argc, char** argv )
       {
       messageFile = argv[++i];
       }
-    else if( strcmp( argv[i], "-h" )==0 )
+    else if( strcmp( argv[i], "-h" )==0
+             || strcmp( argv[i], "--h" )==0
+             || strcmp( argv[i], "--help" )==0
+             || strcmp( argv[i], "-help" )==0 )
       {
       printf("USAGE: %s [-config fileName] [-message fileName|-]\n", argv[0] );
+      exit(0);
+      }
+    else if( strcmp( argv[i], "-v" )==0
+             || strcmp( argv[i], "--v" )==0
+             || strcmp( argv[i], "--version" )==0
+             || strcmp( argv[i], "-version" )==0 )
+      {
+      printf("Commit hash: %s\n", GIT_COMMIT );
+      printf("Commit version tag: %s\n", GIT_VERSION_TAG );
       exit(0);
       }
     else
